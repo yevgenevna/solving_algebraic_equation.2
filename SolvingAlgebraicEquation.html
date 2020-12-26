@@ -1,0 +1,14 @@
+﻿<!DOCTYPE HTML>
+<!-- Do not remove and do not change this string -->
+<html lang=ru>
+<head>
+<title>Решить уравнение</title>
+<meta charset="utf-8">
+</head>
+<body><p>Найти один локализованный корень алгебраического уравнения</p><p>Пример:</p><p>Уравнение <input id="input_equation" oninput="this.value = this.value.replace(/[^0-9x*+-]/g, '')" value="x*x*x-2*x*x-3*x-5"> = 0</p>
+<p>Искать в интервале от <input id="a_border" value="-10" style="width:50px"> до <input id="b_border" value="10" style="width:50px"></p>
+<p>Точность ε = <input id="epsilon" value="1e-10" style="width:50px"></p><p>	<button onclick=calculate_square()>Решить</button></p><p id="result"></p>
+<p id="result2"></p>
+</body>
+</html>
+<!-- Do not remove and do not change this string -->
