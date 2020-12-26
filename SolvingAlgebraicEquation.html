@@ -4,8 +4,49 @@
 <head>
 <title>Решить уравнение</title>
 <meta charset="utf-8">
+
+<script>
+function calculate_square()
+{
+	try {
+		var polinom_equation = document.getElementById("input_equation").value;	
+		var a_border = parseFloat(document.getElementById("a_border").value);
+		var b_border = parseFloat(document.getElementById("b_border").value);
+		var epsilon = parseFloat(document.getElementById("epsilon").value);
+		
+		if(isNaN(a_border) || isNaN(b_border) || isNaN(epsilon))
+		{
+			alert("Не правильно введены границы интервала или epsilon!");
+			return;
+		}
+		var interval1 = [a_border, b_border];
+		var interval2 = [a_border, b_border];
+		
+		x = dichotomy_method(interval1, polinom_equation, epsilon);
+		
+		if (Math.abs(calc_func_mean(x, polinom_equation)) > 0.05)
+			x = find_extremum(interval1, polinom_equation, epsilon, "min");
+		
+		if (Math.abs(calc_func_mean(x, polinom_equation)) > 0.05)
+			x = find_extremum(interval2, polinom_equation, epsilon, "max");
+				
+		if (Math.abs(calc_func_mean(x, polinom_equation)) > 0.05)
+			document.getElementById("result").innerHTML = "На заданном интервале корней не удалось найти, "+
+			"возможно уравнение не имеет корней, или на интервале корней больше чем 1.";
+		else
+			document.getElementById("result").innerHTML = "Корень = "+x;	
+	}
+	catch(e)
+	{
+		if (e instanceof SyntaxError)
+			alert("Проверте введённое уравнение, необходимо что-бы все знаки операций присутствовали.");
+	}
+}
+
+</script>
 </head>
-<body><p>Найти один локализованный корень алгебраического уравнения</p><p>Пример:</p><p>Уравнение <input id="input_equation" oninput="this.value = this.value.replace(/[^0-9x*+-]/g, '')" value="x*x*x-2*x*x-3*x-5"> = 0</p>
+<body>
+<p>Найти один локализованный корень алгебраического уравнения</p><p>Пример:</p><p>Уравнение <input id="input_equation" oninput="this.value = this.value.replace(/[^0-9x*+-]/g, '')" value="x*x*x-2*x*x-3*x-5"> = 0</p>
 <p>Искать в интервале от <input id="a_border" value="-10" style="width:50px"> до <input id="b_border" value="10" style="width:50px"></p>
 <p>Точность ε = <input id="epsilon" value="1e-10" style="width:50px"></p><p>	<button onclick=calculate_square()>Решить</button></p><p id="result"></p>
 <p id="result2"></p>
