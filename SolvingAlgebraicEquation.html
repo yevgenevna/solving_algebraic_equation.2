@@ -4,75 +4,8 @@
 <head>
 <title>Решить уравнение</title>
 <meta charset="utf-8">
-</head>
-<body>
-
-<p>Найти один локализованный корень алгебраического уравнения</p>
-<p>Пример:</p>
-<p>Уравнение <input id="input_equation" oninput="this.value = this.value.replace(/[^0-9x*+-]/g, '')" value="x*x*x-2*x*x-3*x-5"> = 0</p>
 
 <script>
-
-function calc_func_mean(x, polinom)
-{
-	return eval(polinom);
-}
-
-// Поиск первого экстрмума в диапазоне методом золотого сечения
-function find_extremum(L, polinom, epsilon, key)
-{
-	k = 0;
-    while (true)
-	{
-        yk = L[0] + ((3-Math.pow(5, 0.5))/2)*(L[1]-L[0]);
-        zk = L[0] + L[1] - yk;
-        func1 = calc_func_mean(yk, polinom);
-        func2 = calc_func_mean(zk, polinom);
-		if (key=="min")
-			expression = func1 <= func2
-		else if (key=="max")
-			expression = func1 >= func2
-		else
-			return NaN;
-        if (expression)
-		{
-            L[1] = zk;
-            yk = L[0] + L[0] - yk;
-            zk = yk;
-		}
-        else
-		{
-            L[0] = yk;
-            yk = zk;
-            zk = L[0] + L[1] - zk;
-		}
-        if (Math.abs(L[1]-L[0]) < epsilon)
-            break
-        k+=1;
-	}
-    return (L[1] + L[0])/2;
-}
-
-// Поиск первого корня в диапазоне методом дихотомии
-function dichotomy_method(interval, polinom, epsilon)
-{
-	var a, b, c;
-	var i = 0;
-    a = interval[0];
-    b = interval[1];
-    while (b - a > epsilon && i <= 200){
-        c = (a + b) / 2;
-		if(calc_func_mean(c, polinom) == 0)
-			return c;
-        else if(calc_func_mean(b, polinom) * calc_func_mean(c, polinom) < 0)
-            a = c;
-        else
-            b = c;
-		i++;
-    }
-    return (a + b) / 2;
-}
-
 function calculate_square()
 {
 	try {
