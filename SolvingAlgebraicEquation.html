@@ -5,10 +5,126 @@
 <title>Решить уравнение</title>
 <meta charset="utf-8">
 </head>
-<body><p>Найти один локализованный корень алгебраического уравнения</p><p>Пример:</p><p>Уравнение <input id="input_equation" oninput="this.value = this.value.replace(/[^0-9x*+-]/g, '')" value="x*x*x-2*x*x-3*x-5"> = 0</p>
+<body>
+
+<p>Найти один локализованный корень алгебраического уравнения</p>
+<p>Пример:</p>
+<p>Уравнение <input id="input_equation" oninput="this.value = this.value.replace(/[^0-9x*+-]/g, '')" value="x*x*x-2*x*x-3*x-5"> = 0</p>
+
+<script>
+
+function calc_func_mean(x, polinom)
+{
+	return eval(polinom);
+}
+
+// Поиск первого экстрмума в диапазоне методом золотого сечения
+function find_extremum(L, polinom, epsilon, key)
+{
+	k = 0;
+    while (true)
+	{
+        yk = L[0] + ((3-Math.pow(5, 0.5))/2)*(L[1]-L[0]);
+        zk = L[0] + L[1] - yk;
+        func1 = calc_func_mean(yk, polinom);
+        func2 = calc_func_mean(zk, polinom);
+		if (key=="min")
+			expression = func1 <= func2
+		else if (key=="max")
+			expression = func1 >= func2
+		else
+			return NaN;
+        if (expression)
+		{
+            L[1] = zk;
+            yk = L[0] + L[0] - yk;
+            zk = yk;
+		}
+        else
+		{
+            L[0] = yk;
+            yk = zk;
+            zk = L[0] + L[1] - zk;
+		}
+        if (Math.abs(L[1]-L[0]) < epsilon)
+            break
+        k+=1;
+	}
+    return (L[1] + L[0])/2;
+}
+
+// Поиск первого корня в диапазоне методом дихотомии
+function dichotomy_method(interval, polinom, epsilon)
+{
+	var a, b, c;
+	var i = 0;
+    a = interval[0];
+    b = interval[1];
+    while (b - a > epsilon && i <= 200){
+        c = (a + b) / 2;
+		if(calc_func_mean(c, polinom) == 0)
+			return c;
+        else if(calc_func_mean(b, polinom) * calc_func_mean(c, polinom) < 0)
+            a = c;
+        else
+            b = c;
+		i++;
+    }
+    return (a + b) / 2;
+}
+
+function calculate_square()
+{
+	try {
+		var polinom_equation = document.getElementById("input_equation").value;	
+		var a_border = parseFloat(document.getElementById("a_border").value);
+		var b_border = parseFloat(document.getElementById("b_border").value);
+		var epsilon = parseFloat(document.getElementById("epsilon").value);
+		
+		if(isNaN(a_border) || isNaN(b_border) || isNaN(epsilon))
+		{
+			alert("Не правильно введены границы интервала или epsilon!");
+			return;
+		}
+		var interval1 = [a_border, b_border];
+		var interval2 = [a_border, b_border];
+		
+		x = dichotomy_method(interval1, polinom_equation, epsilon);
+		
+		if (Math.abs(calc_func_mean(x, polinom_equation)) > 0.05)
+			x = find_extremum(interval1, polinom_equation, epsilon, "min");
+		
+		if (Math.abs(calc_func_mean(x, polinom_equation)) > 0.05)
+			x = find_extremum(interval2, polinom_equation, epsilon, "max");
+				
+		if (Math.abs(calc_func_mean(x, polinom_equation)) > 0.05)
+			document.getElementById("result").innerHTML = "На заданном интервале корней не удалось найти, "+
+			"возможно уравнение не имеет корней, или на интервале корней больше чем 1.";
+		else
+			document.getElementById("result").innerHTML = "Корень = "+x;	
+	}
+	catch(e)
+	{
+		if (e instanceof SyntaxError)
+			alert("Проверте введённое уравнение, необходимо что-бы все знаки операций присутствовали.");
+	}
+}
+
+</script>
+</head>
+<body>
+
+<p>Найти один локализованный корень алгебраического уравнения</p>
+<p>Пример:</p>
+<p>Уравнение <input id="input_equation" oninput="this.value = this.value.replace(/[^0-9x*+-]/g, '')" value="x*x*x-2*x*x-3*x-5"> = 0</p>
 <p>Искать в интервале от <input id="a_border" value="-10" style="width:50px"> до <input id="b_border" value="10" style="width:50px"></p>
-<p>Точность ε = <input id="epsilon" value="1e-10" style="width:50px"></p><p>	<button onclick=calculate_square()>Решить</button></p><p id="result"></p>
-<p id="result2"></p>
+<p>Точность ε = <input id="epsilon" value="1e-10" style="width:50px"></p>
+<p>
+	<button onclick=calculate_square()>Решить</button>
+</p>
+<p id="result"></p>
+<p id="result2"></p>
+
 </body>
 </html>
 <!-- Do not remove and do not change this string -->
